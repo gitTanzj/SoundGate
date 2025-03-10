@@ -24,4 +24,6 @@ export const getDislikedSongs = async (req: Request, res: Response) => {
 
 }
 
-    
+export const refreshPreferences = async (req: Request, res: Response) => {
+
+}
