@@ -6,10 +6,15 @@ import { router } from 'expo-router';
 export default function SignupScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const { signUp } = useAuth();
 
   const handleSignup = async () => {
     try {
+      if (password !== confirmPassword) {
+        Alert.alert('Error', 'Passwords do not match');
+        return;
+      }
       await signUp(email, password);
       router.replace('/(tabs)'); // Navigate to main app after successful login
     } catch (error: any) {
@@ -32,6 +37,13 @@ export default function SignupScreen() {
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
+        secureTextEntry
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Confirm Password"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
         secureTextEntry
       />
       <TouchableOpacity style={styles.button} onPress={handleSignup}>

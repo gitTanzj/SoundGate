@@ -11,7 +11,7 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     try {
       await signIn(email, password);
-      router.replace('/(tabs)'); // Navigate to main app after successful login
+      router.replace('/(tabs)');
     } catch (error: any) {
       Alert.alert('Error', error.message);
     }

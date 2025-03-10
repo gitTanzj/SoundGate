@@ -1,41 +1,37 @@
 import { Image, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { router } from 'expo-router';
 import { useAuth } from '@/hooks/useAuth';
+import ScreenView from '@/components/ScreenView';
 
 export default function HomeScreen() {
-  const { session } = useAuth();
+  const { session, signOut } = useAuth();
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome {session?.user?.email}!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView>
-        <ThemedText>Log in to get started!</ThemedText>
-        { session ? (
-          <TouchableOpacity onPress={() => router.replace('/(tabs)/explore')}>
-            <ThemedText>Explore</ThemedText>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity onPress={() => router.replace('/(auth)/login')}>
-            <ThemedText>Log in</ThemedText>
-          </TouchableOpacity>
-        )}
-      </ThemedView>
-    </ParallaxScrollView>
+      <ScreenView>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">Welcome {session?.user?.email}!</ThemedText>
+        </ThemedView>
+        <ThemedView>
+          <ThemedText>Log in to get started!</ThemedText>
+          { session ? (
+            <TouchableOpacity style={styles.button} onPress={() => router.replace('/(tabs)/explore')}>
+              <ThemedText>Explore</ThemedText>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.button} onPress={() => router.replace('/(auth)/login')}>
+              <ThemedText>Log in</ThemedText>
+            </TouchableOpacity>
+          )}
+          { session && (
+            <TouchableOpacity style={styles.button} onPress={() =>  signOut()}>
+              <ThemedText>Log out</ThemedText>
+            </TouchableOpacity>
+          )}
+        </ThemedView>
+      </ScreenView>
   );
 }
 
@@ -55,5 +51,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  button: {
+    color: 'white',
+    backgroundColor: '#007AFF',
+    height: 50,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 15,
   },
 });
