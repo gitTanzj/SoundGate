@@ -1,21 +1,34 @@
-import express, { Request, Response } from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 const app = express();
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import path from 'path';
+import supabase from './utils/supabase';
 
 app.use(cors())
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.get('/', (req: Request, res: Response) => {
-    res.send("Hello world")
+app.use((req: Request, res: Response, next: NextFunction) => {
+	console.log(req.method, req.path, req.ip)
+	next()
 })
 
-
-import authRoutes from './routes/auth'
-app.use('/api/auth', authRoutes)
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+	if (req.headers.authorization) {
+		const token = req.headers.authorization;
+		const { data: { user } } = await supabase.auth.getUser(token);
+		if (user) {
+			req.user = user;
+		} else {
+			req.user = null;
+			res.status(401).json({ error: 'Unauthorized' });
+			return;
+		}
+	}
+	next();
+});
 
 import userRoutes from './routes/user'
 app.use('/api/user', userRoutes)
