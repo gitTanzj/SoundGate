@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express'
+import express, { NextFunction, Response, Request } from 'express'
 const app = express();
 import cors from 'cors';
 import bodyParser from 'body-parser';
