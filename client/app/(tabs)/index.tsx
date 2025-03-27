@@ -9,6 +9,8 @@ import ScreenView from '@/components/ScreenView';
 export default function HomeScreen() {
   const { session, signOut } = useAuth();
 
+  console.log(session?.access_token);
+
   return (
       <ScreenView>
         <ThemedView style={styles.titleContainer}>
