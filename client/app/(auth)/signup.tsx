@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import { useAuth } from '../../hooks/useAuth';
 import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 
 export default function SignupScreen() {
   const [email, setEmail] = useState('');
@@ -23,36 +24,48 @@ export default function SignupScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        secureTextEntry
-      />
-      <TouchableOpacity style={styles.button} onPress={handleSignup}>
-        <Text style={styles.buttonText}>Sign up</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.replace('/(auth)/login')}>
-        <Text style={styles.linkText}>Already have an account? Log in</Text>
-      </TouchableOpacity>
-    </View>
+    <>
+      <StatusBar style="light" />
+      <View style={styles.container}>
+        <Text style={styles.title}>Sign up</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor={'#999'}
+          selectionColor="white"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor={'#999'}
+          selectionColor="white"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          placeholderTextColor={'#999'}
+          selectionColor="white"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+        />
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>Sign up</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.replace('/(auth)/login')}>
+          <Text style={styles.linkText}>
+          Already have an account? <Text style={{ color: '#007AFF', fontWeight: 'bold' }}>Log in.</Text>
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </>
   );
 }
 
@@ -61,31 +74,38 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: '#131B22',
+  },
+  title: {
+    fontSize: 64,
+    fontWeight: '400',
+    marginBottom: 60,
+    textAlign: 'center',
+    color: 'white',
   },
   input: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    height: 56,
     borderRadius: 8,
     paddingHorizontal: 15,
-    marginBottom: 15,
+    marginBottom: 30,
     fontSize: 16,
+    backgroundColor: '#272e35',
   },
   button: {
     backgroundColor: '#007AFF',
-    height: 50,
+    height: 56,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '600',
   },
   linkText: {
-    color: '#007AFF',
+    color: 'white',
     textAlign: 'center',
     fontSize: 16,
   },
