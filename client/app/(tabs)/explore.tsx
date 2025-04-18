@@ -61,15 +61,6 @@ export default function exploreScreen() {
             <Ionicons name={isPlaying ? 'pause' : 'play'} size={32} color="black" />
           </View>
         </TouchableOpacity>
-        {/* Bottom Controls */}
-        <View style={styles.bottomControls}>
-              <TouchableOpacity>
-                <MaterialCommunityIcons name="heart-off" size={48} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <MaterialCommunityIcons name="heart" size={48} color="white" />
-              </TouchableOpacity>
-        </View>
       </View>
     </View>
   );
@@ -86,8 +77,7 @@ const styles = StyleSheet.create({
       width: '100%',
       paddingBottom: 40,
       backgroundColor: '#131B22',
-      paddingTop: 120,
-      gap: 85,
+      paddingTop: 130,
   },
   header: {
       flexDirection: 'row',
@@ -138,17 +128,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  bottomControls: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    padding: 20,
-  },
   musicContainer: {
     backgroundColor: '#14475a',
     padding: 20,
     paddingTop: 80,
-    gap: 20,
+    gap: 30,
     alignItems: 'center',
   }
 });
