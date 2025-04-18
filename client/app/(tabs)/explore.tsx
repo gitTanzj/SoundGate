@@ -1,46 +1,74 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, useColorScheme } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Animated, PanResponder, useColorScheme } from 'react-native';
 import { router } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
-const sound = require('../../assets/images/sound.png');
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function exploreScreen() {
-  const image = sound;
+const sound = require('../../assets/images/sound.png');
 
+const recommendations = [
+  { id: 1, title: 'APT.', artist: 'ROSÉ, Bruno Mars' },
+  { id: 2, title: 'Lose Control', artist: 'Teddy Swims' },
+  { id: 3, title: 'Close To You', artist: 'Gracie Abrams' },
+  { id: 4, title: 'Dogfight', artist: 'James Bay' },
+  { id: 5, title: 'BIRDS OF A FEATHER', artist: 'Billie Eilish' },
+];
+
+export default function exploreScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const position = useRef(new Animated.Value(0)).current;
 
   const togglePlayPause = () => {
     setIsPlaying(!isPlaying)
   }
 
-  const recommendations = [
-    {
-        id: 1,
-        title: 'APT.',
-        artist: 'ROSÉ, Bruno Mars',
-    },
-    {
-        id: 2,
-        title: 'Lose Control',
-        artist: 'Teddy Swims',
-    },
-    {
-        id: 3,
-        title: 'Close To You',
-        artist: 'Gracie Abrams',
-    },
-    {
-        id: 4,
-        title: "Dogfight",
-        artist: 'James Bay',
-    },
-    {
-        id: 5,
-        title: "BIRDS OF A FEATHER",
-        artist: 'Billie Eilish',
-    },
-  ];
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gesture) => Math.abs(gesture.dx) > 10,
+      onPanResponderMove: Animated.event([null, { dx: position }], {
+        useNativeDriver: false,
+      }),
+      onPanResponderRelease: (_, gesture) => {
+        if (gesture.dx < -120 && currentIndex < recommendations.length - 1) {
+          // Swipe left
+          Animated.timing(position, {
+            toValue: -500,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => {
+            setCurrentIndex((prev) => prev + 1);
+            position.setValue(500);
+            Animated.spring(position, {
+              toValue: 0,
+              useNativeDriver: true,
+            }).start();
+          });
+        } else if (gesture.dx > 120 && currentIndex > 0) {
+          // Swipe right
+          Animated.timing(position, {
+            toValue: 500,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => {
+            setCurrentIndex((prev) => prev - 1);
+            position.setValue(-500);
+            Animated.spring(position, {
+              toValue: 0,
+              useNativeDriver: true,
+            }).start();
+          });
+        } else {
+          // Return to center
+          Animated.spring(position, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
+
   return (
     <View style={styles.safeArea}>
       {/* Header */}
@@ -50,17 +78,19 @@ export default function exploreScreen() {
           </View>
       </View>
       <View style={styles.contentContainer}>
-        <TouchableOpacity style={styles.musicContainer} onPress={togglePlayPause} activeOpacity={0.9}>
-          {/* Waveform Display */}
-          <View style={styles.imageContainer}>
-            <Image source={image} style={styles.image} resizeMode="contain" />
-          </View>
+        <Animated.View style={[styles.musicContainer, { transform: [{ translateX: position }] }]}{...panResponder.panHandlers}>
+          <TouchableOpacity style={styles.musicContainer} onPress={togglePlayPause} activeOpacity={0.9}>
+            {/* Waveform Display */}
+            <View style={styles.imageContainer}>
+              <Image source={sound} style={styles.image} resizeMode="contain" />
+            </View>
 
-          {/* Play Button */}
-          <View style={styles.playButton}>
-            <Ionicons name={isPlaying ? 'pause' : 'play'} size={32} color="black" />
-          </View>
-        </TouchableOpacity>
+            {/* Play Button */}
+            <View style={styles.playButton}>
+              <Ionicons name={isPlaying ? 'pause' : 'play'} size={32} color="black" />
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
       </View>
     </View>
   );
@@ -131,7 +161,7 @@ const styles = StyleSheet.create({
   musicContainer: {
     backgroundColor: '#14475a',
     padding: 20,
-    paddingTop: 80,
+    paddingTop: 60,
     gap: 30,
     alignItems: 'center',
   }
