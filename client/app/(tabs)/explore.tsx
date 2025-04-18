@@ -1,100 +1,154 @@
-import { StyleSheet, Image, Platform } from 'react-native';
-
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, useColorScheme } from 'react-native';
+import { router } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import ScreenView from '@/components/ScreenView';
+const sound = require('../../assets/images/sound.png');
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function TabTwoScreen() {
+export default function exploreScreen() {
+  const image = sound;
+
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying)
+  }
+
+  const recommendations = [
+    {
+        id: 1,
+        title: 'APT.',
+        artist: 'ROSÉ, Bruno Mars',
+    },
+    {
+        id: 2,
+        title: 'Lose Control',
+        artist: 'Teddy Swims',
+    },
+    {
+        id: 3,
+        title: 'Close To You',
+        artist: 'Gracie Abrams',
+    },
+    {
+        id: 4,
+        title: "Dogfight",
+        artist: 'James Bay',
+    },
+    {
+        id: 5,
+        title: "BIRDS OF A FEATHER",
+        artist: 'Billie Eilish',
+    },
+  ];
   return (
-    <ScreenView>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ScreenView>
+    <View style={styles.safeArea}>
+      {/* Header */}
+      <View style={styles.header}>
+          <View style={styles.headerContent}>
+            <ThemedText type="title" style={styles.appName}>SoundGate</ThemedText>
+          </View>
+      </View>
+      <View style={styles.contentContainer}>
+        <TouchableOpacity style={styles.musicContainer} onPress={togglePlayPause} activeOpacity={0.9}>
+          {/* Waveform Display */}
+          <View style={styles.imageContainer}>
+            <Image source={image} style={styles.image} resizeMode="contain" />
+          </View>
+
+          {/* Play Button */}
+          <View style={styles.playButton}>
+            <Ionicons name={isPlaying ? 'pause' : 'play'} size={32} color="black" />
+          </View>
+        </TouchableOpacity>
+        {/* Bottom Controls */}
+        <View style={styles.bottomControls}>
+              <TouchableOpacity>
+                <MaterialCommunityIcons name="heart-off" size={48} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <MaterialCommunityIcons name="heart" size={48} color="white" />
+              </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  safeArea: {
+    flex: 1,
+    width: '100%'
   },
-  titleContainer: {
+  contentContainer: {
+      flex: 1,
+      flexGrow: 1,
+      width: '100%',
+      paddingBottom: 40,
+      backgroundColor: '#131B22',
+      paddingTop: 120,
+      gap: 85,
+  },
+  header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      width: '100%',
+      paddingTop: 90,
+      paddingBottom: 15,
+      paddingLeft: 20,
+      marginTop: 0,
+  
+      backgroundColor: '#0A0E12',
+  },
+  headerContent: {
+      margin: 0,
+  },
+  logo: {
+    width: 36,
+    height: 36,
+    marginRight: 12,
+  },
+  appName: {
+      color: 'white',
+      fontSize: 34,
+      fontWeight: '600',
+      fontFamily: '',
+  },
+  content: {
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  imageContainer: {
+    backgroundColor: '#247BA0',
+    padding: 10,
+    borderRadius: 10,
+    width: '95%',
+    maxWidth: 350,
+  },
+  image: {
+    maxWidth: '100%',
+    maxHeight: '100%',
+    alignItems: 'center',
+  },
+  playButton: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bottomControls: {
     flexDirection: 'row',
-    gap: 8,
+    justifyContent: 'space-between',
+    width: '100%',
+    padding: 20,
   },
+  musicContainer: {
+    backgroundColor: '#14475a',
+    padding: 20,
+    paddingTop: 80,
+    gap: 20,
+    alignItems: 'center',
+  }
 });

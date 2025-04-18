@@ -58,11 +58,11 @@ export default function homeScreen() {
                 <View style={styles.albumList}>
                 {recommendations.map(item => (
                     <View key={item.id} style={styles.albumRow}>
-                    <Image source={item.image} style={styles.albumImage} />
-                    <View>
-                        <ThemedText style={styles.albumTitle}>{item.title}</ThemedText>
-                        <ThemedText style={styles.albumSubtitle}>{item.artist}</ThemedText>
-                    </View>
+                        <Image source={item.image} style={styles.albumImage} />
+                        <View>
+                            <ThemedText style={styles.albumTitle}>{item.title}</ThemedText>
+                            <ThemedText style={styles.albumSubtitle}>{item.artist}</ThemedText>
+                        </View>
                     </View>
                 ))}
                 </View>
