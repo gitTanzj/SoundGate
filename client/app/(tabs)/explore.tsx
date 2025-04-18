@@ -44,7 +44,7 @@ export default function exploreScreen() {
               useNativeDriver: true,
             }).start();
           });
-        } else if (gesture.dx > 120 && currentIndex > 0) {
+        } else if (gesture.dx > 120 && currentIndex < recommendations.length - 1) {
           // Swipe right
           Animated.timing(position, {
             toValue: 500,
@@ -53,6 +53,7 @@ export default function exploreScreen() {
           }).start(() => {
             setCurrentIndex((prev) => prev - 1);
             position.setValue(-500);
+            console.log('right gesture.dx', gesture.dx)
             Animated.spring(position, {
               toValue: 0,
               useNativeDriver: true,
