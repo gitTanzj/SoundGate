@@ -1,92 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert, ActivityIndicator, Linking } from 'react-native';
+import React, { useState } from 'react';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { useAuth } from '../../hooks/useAuth';
 import { router } from 'expo-router';
-import { supabase } from '@/lib/supabase';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn } = useAuth();
-  
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        router.replace('/(tabs)');
-      }
-    });
-
-    // Handle deep linking
-    const handleDeepLink = async (url: string) => {
-      if (url.includes('auth/callback')) {
-        const { data, error } = await supabase.auth.getSession();
-        if (data.session) {
-          router.replace('/(tabs)');
-        }
-      }
-    };
-
-    // Set up deep link listener
-    const deepLinkSubscription = Linking.addEventListener('url', ({ url }) => {
-      handleDeepLink(url);
-    });
-
-    return () => {
-      deepLinkSubscription.remove();
-      authSubscription.unsubscribe();
-    };
-  }, []);
+  const { signIn, signInWithSpotify } = useAuth();
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password');
+      return;
+    }
+    
     try {
       setIsLoading(true);
       await signIn(email, password);
       router.replace('/(tabs)');
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      Alert.alert('Error', error.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const signInWithSpotify = async () => {
+  const handleSpotifyLogin = async () => {
     try {
       setIsLoading(true);
-      console.log('Starting Spotify login...');
-      
-      // First, sign out any existing session
-      await supabase.auth.signOut();
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'spotify',
-        options: {
-          redirectTo: 'soundgate://auth/callback',
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-        }
-      });
-
-      if (error) {
-        console.error('Supabase OAuth error:', error);
-        throw error;
-      }
-
-      if (!data?.url) {
-        throw new Error('No URL returned from OAuth');
-      }
-
-      console.log('Opening URL:', data.url);
-      await Linking.openURL(data.url);
+      await signInWithSpotify();
+      router.replace('/(tabs)');
     } catch (error: any) {
-      console.error('Spotify login error:', error);
-      Alert.alert(
-        'Spotify Login Error',
-        error.message || 'Failed to login with Spotify. Please try again.'
-      );
+      Alert.alert('Error', error.message || 'Failed to login with Spotify. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -124,7 +70,7 @@ export default function LoginScreen() {
       </TouchableOpacity>
       <TouchableOpacity 
         style={[styles.button, styles.spotifyButton, isLoading && styles.buttonDisabled]} 
-        onPress={signInWithSpotify}
+        onPress={handleSpotifyLogin}
         disabled={isLoading}
       >
         {isLoading ? (
@@ -167,7 +113,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   spotifyButton: {
-    backgroundColor: '#1DB954', // Spotify green color
+    backgroundColor: '#1DB954',
   },
   buttonDisabled: {
     opacity: 0.7,
@@ -182,4 +128,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
   },
-}); 
+});
