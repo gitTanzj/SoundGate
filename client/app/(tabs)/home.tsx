@@ -11,26 +11,31 @@ export default function homeScreen() {
             id: 1,
             title: 'APT.',
             artist: 'ROSÉ, Bruno Mars',
+            image: '',
         },
         {
             id: 2,
             title: 'Lose Control',
             artist: 'Teddy Swims',
+            image: '',
         },
         {
             id: 3,
             title: 'Close To You',
             artist: 'Gracie Abrams',
+            image: '',
         },
         {
             id: 4,
             title: "Dogfight",
             artist: 'James Bay',
+            image: '',
         },
         {
             id: 5,
             title: "BIRDS OF A FEATHER",
             artist: 'Billie Eilish',
+            image: '',
         },
     ];
     
@@ -58,7 +63,7 @@ export default function homeScreen() {
                 <View style={styles.albumList}>
                 {recommendations.map(item => (
                     <View key={item.id} style={styles.albumRow}>
-                        <Image source={item.image} style={styles.albumImage} />
+
                         <View>
                             <ThemedText style={styles.albumTitle}>{item.title}</ThemedText>
                             <ThemedText style={styles.albumSubtitle}>{item.artist}</ThemedText>
