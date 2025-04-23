@@ -8,12 +8,14 @@ import { Image } from 'react-native';
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signIn } = useAuth();
+  const { signIn, session } = useAuth();
 
   const handleLogin = async () => {
     try {
-      await signIn(email, password);
-      router.replace('/(tabs)');
+      signIn(email, password)
+      .then(() => {
+        router.replace('/(tabs)');
+      })
     } catch (error: any) {
       Alert.alert('Error', error.message);
     }
