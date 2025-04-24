@@ -9,6 +9,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  signInWithSpotify: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -108,7 +109,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (sessionError) throw sessionError;
         if (session) {
           setSession(session);
-          return session;
         }
       }
       
