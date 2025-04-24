@@ -16,7 +16,7 @@ export const swipe = async (req: Request, res: Response) => {
                 case 'like':
                     const { data, error} = await supabase.from('Liked Songs').upsert({
                         user_id: req.user.id,
-                        songs: [ { id: song.id, name: song.name, artists: song.artists.map((artist) => artist.name), album: song.album.name, albumImage: song.album.images[0].url } ]
+                        songs: [ { id: song.id, name: song.name, artists: song.artists, album: song.album.name, albumImage: song.album.images[0].url } ]
                     })
 
                     if(error){
@@ -27,7 +27,7 @@ export const swipe = async (req: Request, res: Response) => {
                 case 'dislike':
                     const { data: dislikedData, error: dislikedError } = await supabase.from('Disliked Songs').upsert({
                         user_id: req.user.id,
-                        songs: [ { id: song.id, name: song.name, artists: song.artists.map((artist) => artist.name), album: song.album.name, albumImage: song.album.images[0].url } ]
+                        songs: [ { id: song.id, name: song.name, artists: song.artists, album: song.album.name, albumImage: song.album.images[0].url } ]
                     })
                     
                     if(dislikedError){

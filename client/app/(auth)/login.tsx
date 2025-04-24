@@ -68,7 +68,7 @@ export default function LoginScreen() {
           <Text style={styles.buttonText}>Log in</Text>
         </TouchableOpacity>
         <Text style={styles.regularText}>or</Text>
-        <TouchableOpacity style={styles.googleButton} onPress={handleLogin}>
+        {/* <TouchableOpacity style={styles.googleButton} onPress={handleLogin}>
           <View style={styles.row}>
             <Image
               source={require('../../assets/images/google_G_logo.png')} // Local image
@@ -76,7 +76,7 @@ export default function LoginScreen() {
             />
             <Text style={styles.googleButtonText}>Sign in with Google</Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity 
           style={[styles.button, styles.spotifyButton, isLoading && styles.buttonDisabled]} 
           onPress={handleSpotifyLogin}
@@ -172,5 +172,6 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontSize: 16,
+    marginTop: 20,
   },
 });
