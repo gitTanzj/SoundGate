@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
-import { useAuth } from '../../hooks/useAuth';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { signUp } from '@/lib/functions';
 
 export default function SignupScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const { signUp } = useAuth();
 
   const handleSignup = async () => {
     try {
