@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import { useAuth } from '../../hooks/useAuth';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Image } from 'react-native';
+import { signIn } from '@/lib/functions';
+import { signInWithSpotify } from '@/lib/functions';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn, signInWithSpotify } = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {

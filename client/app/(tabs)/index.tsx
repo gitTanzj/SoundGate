@@ -4,6 +4,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { router } from 'expo-router';
 import { useAuth } from '@/hooks/useAuth';
 import { useColorScheme } from 'react-native';
+import { signOut } from '@/lib/functions';
 
 const recommendations = [
   {
@@ -39,7 +40,7 @@ const recommendations = [
 ];
 
 export default function HomeScreen() {
-  const { session, signOut } = useAuth();
+  const { session } = useAuth();
   const colorScheme = useColorScheme() ?? 'light'; // Default value dark
 
   useEffect(() => {
