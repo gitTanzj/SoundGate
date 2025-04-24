@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { useAuth } from '../../hooks/useAuth';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -8,16 +8,35 @@ import { Image } from 'react-native';
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signIn, session } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const { signIn, signInWithSpotify } = useAuth();
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password');
+      return;
+    }
+    
     try {
-      signIn(email, password)
-      .then(() => {
-        router.replace('/(tabs)');
-      })
+      setIsLoading(true);
+      await signIn(email, password);
+      router.replace('/(tabs)');
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      Alert.alert('Error', error.message || 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSpotifyLogin = async () => {
+    try {
+      setIsLoading(true);
+      await signInWithSpotify();
+      router.replace('/(tabs)');
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Failed to login with Spotify. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -58,6 +77,17 @@ export default function LoginScreen() {
             <Text style={styles.googleButtonText}>Sign in with Google</Text>
           </View>
         </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.button, styles.spotifyButton, isLoading && styles.buttonDisabled]} 
+          onPress={handleSpotifyLogin}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.buttonText}>Login with Spotify</Text>
+          )}
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => router.replace('/(auth)/signup')}>
           <Text style={styles.linkText}>
           Don't have an account? <Text style={{ color: '#007AFF', fontWeight: 'bold' }}>Sign up.</Text>
@@ -96,6 +126,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  spotifyButton: {
+    backgroundColor: '#1DB954',
+  },
+  buttonDisabled: {
+    opacity: 0.7,
   },
   buttonText: {
     color: 'white',

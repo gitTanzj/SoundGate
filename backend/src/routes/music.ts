@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { getLikedSongs, swipe, getGenres, getMatches, getLovedSongs, getDislikedSongs, refreshPreferences } from "../controllers/musicController";
+import { getLikedSongs, swipe, getGenres, getMatches, getLovedSongs, getDislikedSongs, refreshPreferences, getSongAudio } from "../controllers/music.controller";
 
 
 const router = Router();
 
 router.post('/swipe', swipe)
+
+router.get('/audio', getSongAudio)
 
 router.get('/genres', getGenres)
 
