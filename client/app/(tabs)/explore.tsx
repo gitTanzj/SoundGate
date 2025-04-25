@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Animated, PanResponder, useColorScheme } from 'react-native';
 import { router } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-
+import axiosInstance from '@/lib/axiosInstance';
+import { getApiUrl } from '@/lib/functions';
 const sound = require('../../assets/images/sound.png');
 
 const recommendations = [
@@ -15,6 +16,7 @@ const recommendations = [
 ];
 
 export default function exploreScreen() {
+  const [currentSong, setCurrentSong] = useState<{ song: string, artist: string } | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const position = useRef(new Animated.Value(0)).current;
@@ -69,6 +71,20 @@ export default function exploreScreen() {
       },
     })
   ).current;
+
+  useEffect(() => {
+    axiosInstance.get(`${getApiUrl()}/api/music/matches`) 
+    .then(async (response) => {
+      if(response.status === 200) {
+        const song = response.data.song;
+        console.log(song.parts[0].text);
+        setCurrentSong(await JSON.parse(song.parts[0].text));
+      }
+    })
+    .catch((error) => {
+      console.log(error.response.data);
+    })
+  }, [])
 
   return (
     <View style={styles.safeArea}>

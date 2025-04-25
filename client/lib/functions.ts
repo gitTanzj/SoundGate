@@ -1,6 +1,10 @@
 import { supabase } from "./supabase";
 import * as WebBrowser from 'expo-web-browser';
 
+export const getApiUrl = () => {
+    return 'http://192.168.1.113:3000';
+}
+
 export const signUp = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signUp({

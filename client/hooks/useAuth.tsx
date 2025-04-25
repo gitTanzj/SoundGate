@@ -10,6 +10,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 import * as WebBrowser from 'expo-web-browser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Ensure WebBrowser redirects are handled properly
 WebBrowser.maybeCompleteAuthSession();
@@ -25,16 +26,21 @@ export function useAuth() {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session) {
+        AsyncStorage.setItem('session', JSON.stringify(session));
+      }
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('session', session);
-      setSession(session);
+      if (session) {
+        AsyncStorage.setItem('session', JSON.stringify(session));
+      } else {
+        AsyncStorage.removeItem('session');
+      }
       setLoading(false);
     });
 

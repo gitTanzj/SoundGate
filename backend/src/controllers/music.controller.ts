@@ -14,7 +14,7 @@ export const swipe = async (req: Request, res: Response) => {
 
             switch(action) {
                 case 'like':
-                    const { data, error} = await supabase.from('Liked Songs').upsert({
+                    const { data, error } = await supabase.from('Liked Songs').upsert({
                         user_id: req.user.id,
                         songs: [ { id: song.id, name: song.name, artists: song.artists.map((artist: any) => artist.name), album: song.album.name, albumImage: song.album.images[0].url } ]
                     })
@@ -93,9 +93,9 @@ export const getMatches  = async (req: Request, res: Response) => {
                 2. Output only the song name and the artist in the following format: { song: string, artist: string }
             `
 
-            const result = await gemini.generateContent(prompt)
+            const result = await gemini.generateContent(prompt) as any;
 
-            res.status(200).json(result)
+            res.status(200).json({ song: result.response.candidates[0].content })
 
         } catch(error) {
             res.status(500).json({ error: error })
